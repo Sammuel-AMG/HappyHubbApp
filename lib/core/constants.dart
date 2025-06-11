@@ -1,4 +1,8 @@
+// lib/core/constants.dart
+import 'package:flutter/material.dart';
+
+/// Central brand palette – real Color objects.
 class HHColors {
-  static const orange = 0xFFA54205;
-  static const yellow = 0xFFFFEC99;
+  static const Color orange = Color(0xFFA54205);
+  static const Color yellow = Color(0xFFFFEC99);
 }
