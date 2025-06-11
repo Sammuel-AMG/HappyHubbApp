@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'core/theme.dart';
 
 /// --- Brand palette ---
 const kOrange = Color(0xFFA54205);
@@ -18,17 +19,7 @@ class HappyHub extends StatelessWidget {
     return MaterialApp(
       title: 'Happy Hub',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: kOrange,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: kOrange,
-        ).copyWith(primary: kOrange, secondary: kYellow),
-        textTheme: GoogleFonts.rubikTextTheme().apply(
-          bodyColor: kYellow,
-          displayColor: kYellow,
-        ),
-        useMaterial3: true,
-      ),
+      theme: hhTheme, // Use the theme from theme.dart
       home: const SplashScreen(),
     );
   }
