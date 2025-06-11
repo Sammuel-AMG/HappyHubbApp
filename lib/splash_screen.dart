@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:happy_hub/core/constants.dart';
-import 'package:happy_hub/features/hub/view/hub_shell.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,11 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    // after 2 s jump to hub via GoRouter
     Timer(const Duration(seconds: 2), () {
-      if (mounted)
-        Navigator.of(
-          context,
-        ).pushReplacement(MaterialPageRoute(builder: (_) => const HubShell()));
+      if (mounted) context.go('/hub');
     });
   }
 

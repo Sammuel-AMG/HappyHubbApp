@@ -1,15 +1,9 @@
-// … existing imports …
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:happy_hub/core/constants.dart';
-import 'package:happy_hub/features/hub/view/hub_screen.dart';
-import 'package:happy_hub/features/map/view/map_stub_page.dart';
-import 'package:happy_hub/features/orders/view/orders_page.dart';
-import 'package:happy_hub/features/notifications/view/notifications_page.dart';
-import 'package:happy_hub/features/profile/view/profile_page.dart';
 
 class HubShell extends StatefulWidget {
-  /// new parameter — the route’s inner page
-  final Widget child;
+  final Widget child; // page supplied by ShellRoute
   const HubShell({super.key, required this.child});
 
   @override
@@ -17,23 +11,26 @@ class HubShell extends StatefulWidget {
 }
 
 class _HubShellState extends State<HubShell> {
+  // path list aligns with bottom-nav order
+  static const _paths = [
+    '/hub',
+    '/map',
+    '/orders',
+    '/notifications',
+    '/profile',
+  ];
   int _idx = 0;
 
-  static final List<Widget> _pages = [
-    const HubScreen(),
-    const MapStubPage(),
-    const OrdersPage(),
-    const NotificationsPage(),
-    const ProfilePage(),
-  ];
-
-  void _onTap(int i) => setState(() => _idx = i);
+  void _onTap(int i) {
+    if (i == _idx) return; // already there
+    setState(() => _idx = i);
+    context.go(_paths[i]); // use GoRouter
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // we’ll swap to widget.child in step 4; keep old list for now
-      body: _pages[_idx],
+      body: widget.child, // <<< use routed child
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _idx,
         onTap: _onTap,
