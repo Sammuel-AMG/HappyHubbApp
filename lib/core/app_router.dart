@@ -4,28 +4,52 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:happy_hub/splash_screen.dart';
+import 'package:happy_hub/features/auth/view/login_page.dart';
+import 'package:happy_hub/features/auth/view/singup_page.dart';
 import 'package:happy_hub/features/hub/view/hub_shell.dart';
 import 'package:happy_hub/features/hub/view/hub_screen.dart';
 import 'package:happy_hub/features/map/view/map_stub_page.dart';
 import 'package:happy_hub/features/orders/view/orders_page.dart';
 import 'package:happy_hub/features/notifications/view/notifications_page.dart';
 import 'package:happy_hub/features/profile/view/profile_page.dart';
+import 'package:happy_hub/data/models/repositories/auth_repo.dart'; // ✔ correct path
 
-/// Riverpod provider that exposes a configured GoRouter instance.
-/// Any widget can `ref.watch(routerProvider)` to get navigation.
 final routerProvider = Provider<GoRouter>((ref) {
+  final bool loggedIn = ref.watch(authRepoProvider);
+
   return GoRouter(
-    initialLocation: '/', // start on splash
+    initialLocation: '/',
+    redirect: (context, state) {
+      final dest = state.uri.toString();
+
+      // 👉 Allow splash ('/') to appear even if logged out
+      if (dest == '/') return null;
+
+      final inAuthFlow = dest == '/login' || dest == '/signup';
+      if (!loggedIn && !inAuthFlow) return '/login';
+      if (loggedIn && inAuthFlow) return '/hub';
+      return null;
+    },
+
     routes: [
-      /// -------- Splash (stand-alone) --------
+      // Splash
       GoRoute(
         path: '/',
         pageBuilder: (_, __) => const NoTransitionPage(child: SplashScreen()),
       ),
 
-      /// -------- Shell with bottom-nav --------
+      // Auth
+      GoRoute(
+        path: '/login',
+        pageBuilder: (_, __) => NoTransitionPage(child: LoginPage()),
+      ),
+      GoRoute(
+        path: '/signup',
+        pageBuilder: (_, __) => NoTransitionPage(child: SignUpPage()),
+      ),
+
+      // Shell + branches
       ShellRoute(
-        // keeps HubShell alive while switching its branch pages
         builder: (_, __, child) => HubShell(child: child),
         routes: [
           GoRoute(
